@@ -16,7 +16,7 @@ Step 2: Start the enviornment by running ".venv\Scripts\Activate.ps1" in your te
 
 
 ## Install Steps
-pip install
+pip install -r requirements.txt
 
 ## How to Run App
 uvicorn main:app --reload
