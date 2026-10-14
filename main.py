@@ -54,7 +54,7 @@ def get_name(name: str):
     return {"message": f"hello {name}"}
 
 
-@app.post("/products")
+@app.post("/products", status_code=201)
 def create_product(product: Product):
     products.append(product)
     return product
