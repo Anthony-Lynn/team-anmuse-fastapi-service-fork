@@ -1,6 +1,6 @@
 $kind: http-request
 url: "{{base_url}}/hello"
-method: POST
+method: GET
 body:
   type: json
   content: ""
