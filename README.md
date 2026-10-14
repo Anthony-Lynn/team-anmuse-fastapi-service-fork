@@ -21,5 +21,5 @@ pip install -r requirements.txt
 ## How to Run App
 uvicorn main:app --reload
 Endpoints:
-- Get(https://https://http://127.0.0.1:8000)
-- Get(https://http://127.0.0.1:8000/hello/{name})
+- Get(https://127.0.0.1:8000)
+- Get(https://127.0.0.1:8000/hello/{name})
