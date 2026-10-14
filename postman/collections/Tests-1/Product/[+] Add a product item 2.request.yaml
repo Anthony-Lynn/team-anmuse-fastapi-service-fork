@@ -1,0 +1,27 @@
+$kind: http-request
+url: "{{base_url}}/products"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"name\": \"{{item_2_name}}\",\r
+
+    \    \"unit\": \"{{item_2_unit}}\",\r
+
+    \    \"cost_per_unit\": {{item_2_cost_per_unit}},\r
+
+    \    \"price_per_unit\": {{item_2_price_per_unit}},\r
+
+    \    \"quantity_in_stock\": {{item_2_quantity_in_stock}}\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "pm.test(\"Status code should be 201\", () => {\r
+
+      \    pm.response.to.have.status(201)\r
+
+      })"
+    language: text/javascript
+order: 2000

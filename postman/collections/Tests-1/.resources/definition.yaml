@@ -1,0 +1,20 @@
+$kind: collection
+name: Tests
+variables:
+  base_url: ""
+  user_name: ""
+  item_1_name: ""
+  item_1_unit: ""
+  item_1_cost_per_unit: ""
+  item_1_price_per_unit: ""
+  item_1_quantity_in_stock: ""
+  item_2_name: ""
+  item_2_unit: ""
+  item_2_cost_per_unit: ""
+  item_2_price_per_unit: ""
+  item_2_quantity_in_stock: ""
+  item_3_name: ""
+  item_3_unit: ""
+  item_3_cost_per_unit: ""
+  item_3_price_per_unit: ""
+  item_3_quantity_in_stock: ""
