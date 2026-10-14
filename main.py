@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from models import Product
 
-type json = str | bytes | bytearray
 app = FastAPI()
 
 
