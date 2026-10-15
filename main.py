@@ -22,4 +22,4 @@ def get_name(name: str):
 def db_check():
     local_session = SessionLocal()
     product_count = local_session.query(ProductModel).count()
-    return {"product_count": product_count}
+    return product_count
