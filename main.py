@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from database import Base, engine
 from app.domains.products.product_router import router as product_router
+from app.domains.products.models.product_model import Product as ProductModel 
 
 app = FastAPI()
 app.include_router(product_router)
