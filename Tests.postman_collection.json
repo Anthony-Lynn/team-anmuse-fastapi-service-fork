@@ -1,0 +1,516 @@
+{
+  "info": {
+    "_postman_id": "7f2367e5-9947-4442-96fb-28c319d1d757",
+    "name": "Tests",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58847251"
+  },
+  "item": [
+    {
+      "name": "Hello",
+      "item": [
+        {
+          "name": "[+] Get hello world",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code should be 200 or 201\", () => {\r\n    pm.expect(pm.response.code).to.be.oneOf([200, 201])\r\n})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}",
+              "host": [
+                "{{base_url}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[+] Get hello user_name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code should be 200 or 201\", () => {\r\n    pm.expect(pm.response.code).to.be.oneOf([200, 201])\r\n})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/hello/{{user_name}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "hello",
+                "{{user_name}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[-] Get hello missing name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code should be 404\", () => {pm.response.to.have.status(404)})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/hello",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "hello"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Product",
+      "item": [
+        {
+          "name": "[+] Add a product item 1",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code should be 201\", () => {pm.response.to.have.status(201)})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"{{item_1_name}}\",\r\n    \"unit\": \"{{item_1_unit}}\",\r\n    \"cost_per_unit\": {{item_1_price_per_unit}},\r\n    \"price_per_unit\": {{item_1_price_per_unit}},\r\n    \"quantity_in_stock\": {{item_1_quantity_in_stock}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[+] Add a product item 2",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code should be 201\", () => {pm.response.to.have.status(201)})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"{{item_2_name}}\",\r\n    \"unit\": \"{{item_2_unit}}\",\r\n    \"cost_per_unit\": {{item_2_price_per_unit}},\r\n    \"price_per_unit\": {{item_2_price_per_unit}},\r\n    \"quantity_in_stock\": {{item_2_quantity_in_stock}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[+] Add a product item 3",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code should be 201\", () => {pm.response.to.have.status(201)})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"{{item_3_name}}\",\r\n    \"unit\": \"{{item_3_unit}}\",\r\n    \"cost_per_unit\": {{item_3_price_per_unit}},\r\n    \"price_per_unit\": {{item_3_price_per_unit}},\r\n    \"quantity_in_stock\": {{item_3_quantity_in_stock}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[-] Add a product invalid cost_per_unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code should be 422\", () => {pm.response.to.have.status(422)})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"{{item_1_name}}\",\r\n    \"unit\": \"{{item_1_unit}}\",\r\n    \"cost_per_unit\": -1.0,\r\n    \"price_per_unit\": {{item_1_price_per_unit}},\r\n    \"quantity_in_stock\": {{item_1_quantity_in_stock}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[-] Add a product invalid quantity_in_stock",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code should be 422\", () => {pm.response.to.have.status(422)})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"{{item_1_name}}\",\r\n    \"unit\": \"{{item_1_unit}}\",\r\n    \"cost_per_unit\": {{item_1_cost_per_unit}},\r\n    \"price_per_unit\": {{item_1_price_per_unit}},\r\n    \"quantity_in_stock\": -1\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[+] Get product item 1 by name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code should be 200 or 201\", () => {\r\n    pm.expect(pm.response.code).to.be.oneOf([200, 201])\r\n})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/search?name={{item_1_name}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "{{item_1_name}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[+] Get product item 2 by name and unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code should be 200 or 201\", () => {\r\n    pm.expect(pm.response.code).to.be.oneOf([200, 201])\r\n})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/search?name={{item_2_name}}&unit={{item_2_unit}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "search"
+              ],
+              "query": [
+                {
+                  "key": "name",
+                  "value": "{{item_2_name}}"
+                },
+                {
+                  "key": "unit",
+                  "value": "{{item_2_unit}}"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[-] Get product missing name",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code should be 422\", () => {pm.response.to.have.status(422)})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/search",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "search"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[+] Get products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code should be 200 or 201\", () => {\r\n    pm.expect(pm.response.code).to.be.oneOf([200, 201])\r\n})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "[+] Check database query",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Status code should be 200\", () => {pm.response.to.have.status(200)})"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/db-check",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "db-check"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000"
+    },
+    {
+      "key": "user_name",
+      "value": "Sue"
+    },
+    {
+      "key": "item_1_name",
+      "value": "Basil Plant - 4in Pot"
+    },
+    {
+      "key": "item_1_unit",
+      "value": "each"
+    },
+    {
+      "key": "item_1_cost_per_unit",
+      "value": "1.75"
+    },
+    {
+      "key": "item_1_price_per_unit",
+      "value": "4.99"
+    },
+    {
+      "key": "item_1_quantity_in_stock",
+      "value": "40"
+    },
+    {
+      "key": "item_2_name",
+      "value": "Soil"
+    },
+    {
+      "key": "item_2_unit",
+      "value": "bag"
+    },
+    {
+      "key": "item_2_cost_per_unit",
+      "value": "5.69"
+    },
+    {
+      "key": "item_2_price_per_unit",
+      "value": "19.99"
+    },
+    {
+      "key": "item_2_quantity_in_stock",
+      "value": "7"
+    },
+    {
+      "key": "item_3_name",
+      "value": "Hand Trowel"
+    },
+    {
+      "key": "item_3_unit",
+      "value": "each"
+    },
+    {
+      "key": "item_3_cost_per_unit",
+      "value": "7.87"
+    },
+    {
+      "key": "item_3_price_per_unit",
+      "value": "12.99"
+    },
+    {
+      "key": "item_3_quantity_in_stock",
+      "value": "12"
+    }
+  ]
+}
