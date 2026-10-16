@@ -1,20 +1,25 @@
-from .product_repository import ProductRepository
-from .schemas.product import Product
+from sqlalchemy.orm import Session
+
+from app.domains.products.models.product_model import Product as ProductModel
+from app.domains.products.product_repository import ProductRepository
+from app.domains.products.schemas.product import ProductCreate
 
 
 class ProductService:
     def __init__(self, repository: ProductRepository | None = None):
         self.repository = repository or ProductRepository()
 
-    def create_product(self, product: Product):
-        return self.repository.create_product(product)
+    def create_product(self, db: Session, product: ProductCreate) -> ProductModel:
+        return self.repository.create_product(db, product)
 
-    def get_products(self):
-        return self.repository.get_products()
+    def get_products(self, db: Session) -> list[ProductModel]:
+        return self.repository.get_products(db)
 
-    def search_product(self, name: str, unit: str = "each"):
-        products = self.repository.get_products()
+    def get_product_by_id(self, db: Session, product_id: int) -> ProductModel | None:
+        return self.repository.get_product_by_id(db, product_id)
+
+    def search_product(self, db: Session, name: str, unit: str = "each") -> list[ProductModel]:
+        products = self.repository.get_products(db)
         filtered_products = [p for p in products if name.lower() in p.name.lower()]
         filtered_products = [p for p in filtered_products if p.unit == unit]
-
         return filtered_products
