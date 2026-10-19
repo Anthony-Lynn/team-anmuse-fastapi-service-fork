@@ -2,7 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import Session
 
 from app.domains.products.models.product_model import Product as ProductModel
-from app.domains.products.schemas.product import ProductCreate
+from app.domains.products.schemas.product import ProductCreate, ProductUpdate
 
 
 class ProductRepository:
@@ -24,3 +24,26 @@ class ProductRepository:
 
     def get_product_by_id(self, db: Session, product_id: int) -> ProductModel | None:
         return db.get(ProductModel, product_id)
+
+    def update_product(
+        self, db: Session, product_id: int, product: ProductUpdate
+    ) -> ProductModel | None:
+        db_product = self.get_product_by_id(db, product_id)
+        if db_product is None:
+            return None
+        db_product.name = product.name
+        db_product.unit = product.unit
+        db_product.cost_per_unit = product.cost_per_unit
+        db_product.price_per_unit = product.price_per_unit
+        db_product.quantity_in_stock = product.quantity_in_stock
+        db.commit()
+        db.refresh(db_product)
+        return db_product
+
+    def delete_product(self, db: Session, product_id: int) -> bool:
+        db_product = self.get_product_by_id(db, product_id)
+        if db_product is None:
+            return False
+        db.delete(db_product)
+        db.commit()
+        return True
