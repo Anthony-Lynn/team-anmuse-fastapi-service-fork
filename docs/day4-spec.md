@@ -1,10 +1,10 @@
 # Day4 Business Requirements:
 
 ## Create_product endpoint 
-   As a developer, I want 
+   
    - Given the POST /products endpoint is defined
    - When I submit a request using the Product Pydantic schema
-   - Then it's saved in postgres using the Product SQLAlchemy model and returns the saved product object using a response_model with 201 staus code
+   - Then it's saved in postgres using the Product SQLAlchemy model and returns the saved product object using a response_model with 201 status code
 
 ## Get /product returns products saved in database
    - Given at least one product has been submitted via POST /products
