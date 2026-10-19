@@ -31,7 +31,9 @@ Endpoints:
 
 ## How to Test
 
-Example Data:
+Create a new postman workspace, then drag the Tests.postman_collection.json file into the "Items in Cloud" section.
+
+Example rroduct endpoint request body:
 {
     "name": "syrup",
     "unit": "bottle",

@@ -282,6 +282,34 @@
           "response": []
         },
         {
+          "name": "[+] Get products",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code should be 200 or 201\", () => {\r\n    pm.expect(pm.response.code).to.be.oneOf([200, 201])\r\n})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
           "name": "[+] Get product item 1 by name",
           "event": [
             {
@@ -385,28 +413,210 @@
           "response": []
         },
         {
-          "name": "[+] Get products",
+          "name": "[+] Update item 1 with name of item 2",
           "event": [
             {
               "listen": "test",
               "script": {
                 "type": "text/javascript",
                 "exec": [
-                  "pm.test(\"Status code should be 200 or 201\", () => {\r\n    pm.expect(pm.response.code).to.be.oneOf([200, 201])\r\n})"
+                  "pm.test(\"Status code should be 200\", () => {pm.response.to.have.status(200)})"
                 ]
               }
             }
           ],
           "request": {
-            "method": "GET",
+            "method": "PUT",
             "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"{{item_2_name}}\",\r\n    \"unit\": \"{{item_1_unit}}\",\r\n    \"cost_per_unit\": {{item_1_cost_per_unit}},\r\n    \"price_per_unit\": {{item_1_price_per_unit}},\r\n    \"quantity_in_stock\": {{item_1_quantity_in_stock}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
             "url": {
-              "raw": "{{base_url}}/products",
+              "raw": "{{base_url}}/products/1",
               "host": [
                 "{{base_url}}"
               ],
               "path": [
-                "products"
+                "products",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[-] Update item with missing id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code should be 404\", () => {pm.response.to.have.status(404)})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"{{item_1_name}}\",\r\n    \"unit\": \"{{item_1_unit}}\",\r\n    \"cost_per_unit\": {{item_1_cost_per_unit}},\r\n    \"price_per_unit\": {{item_1_price_per_unit}},\r\n    \"quantity_in_stock\": {{item_1_quantity_in_stock}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/products/4",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "4"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[-] Update item with invalid cost_per_unit",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code should be 422\", () => {pm.response.to.have.status(422)})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"{{item_1_name}}\",\r\n    \"unit\": \"{{item_1_unit}}\",\r\n    \"cost_per_unit\": -1.0,\r\n    \"price_per_unit\": {{item_1_price_per_unit}},\r\n    \"quantity_in_stock\": {{item_1_quantity_in_stock}}\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/products/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[-] Update item with invalid quantity_in_stock",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code should be 422\", () => {pm.response.to.have.status(422)})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"{{item_1_name}}\",\r\n    \"unit\": \"{{item_1_unit}}\",\r\n    \"cost_per_unit\": {{item_1_cost_per_unit}},\r\n    \"price_per_unit\": {{item_1_price_per_unit}},\r\n    \"quantity_in_stock\": -1.0\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/products/1",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "1"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[+] Remove item 3",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code should be 204\", () => {pm.response.to.have.status(204)})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/3",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "3"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "[-] Remove item with missing id",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test(\"Status code should be 404\", () => {pm.response.to.have.status(404)})"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/products/4",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "products",
+                "4"
               ]
             }
           },

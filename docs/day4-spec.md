@@ -71,3 +71,65 @@
    - Given we have an API documenation with a list of endpoints
    - When someone call an endpoint listed on the API
    - Then they should get the relative response based on the request endpoint documentation
+
+   ## POST /products
+- Request Body:
+{
+   "name": str,
+   "unit": str,
+   "cost_per_unit": float,
+   "price_per_unit": float,
+   "quantity_in_stock": float
+}
+- Successful Response:
+Status - 201
+{
+   "name": str,
+   "unit": str,
+   "cost_per_unit": float,
+   "price_per_unit": float,
+   "quantity_in_stock": float
+}
+- Failure Response [invalid properties]:
+Status - 422
+
+## GET /products
+- Successful Response:
+Status - 200
+[Product]
+
+## GET /products/search?name={str}&unit={str}
+- Successful Response:
+Status - 200
+[Product]
+- Failure Response [missing name field]:
+Status - 422
+
+## PUT /products/{id}
+- Request Body:
+{
+   "name": str,
+   "unit": str,
+   "cost_per_unit": float,
+   "price_per_unit": float,
+   "quantity_in_stock": float
+}
+- Successful Response:
+Status - 200 or 201
+{
+   "name": str,
+   "unit": str,
+   "cost_per_unit": float,
+   "price_per_unit": float,
+   "quantity_in_stock": float
+}
+- Failure Response [missing id]:
+Status - 404
+- Failure Repsonse [invalid properties]:
+Status - 422
+
+## DELETE /products/{id}
+- Successful Response:
+Status - 204
+- Failure Response [missing id]:
+Status - 404
