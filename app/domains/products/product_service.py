@@ -26,7 +26,9 @@ class ProductService:
     def delete_product(self, db: Session, product_id: int) -> bool:
         return self.repository.delete_product(db, product_id)
 
-    def search_product(self, db: Session, name: str, unit: str = "each") -> list[ProductModel]:
+    def search_product(
+        self, db: Session, name: str, unit: str = "each"
+    ) -> list[ProductModel]:
         products = self.repository.get_products(db)
         filtered_products = [p for p in products if name.lower() in p.name.lower()]
         filtered_products = [p for p in filtered_products if p.unit == unit]

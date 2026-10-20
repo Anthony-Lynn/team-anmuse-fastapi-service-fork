@@ -1,0 +1,187 @@
+{
+  "info": {
+    "_postman_id": "3e1de40f-20bf-4b6b-a229-7126a12d5d7b",
+    "name": "Product API Tests",
+    "description": "Sequential Postman equivalents of the pytest product API scenarios. Run against an empty, dedicated test database; the first request checks that GET /products is empty.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Product API scenarios (run in order on a clean test database)",
+      "item": [
+        {
+          "name": "[+] GET /products - returns empty list",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Status is 200 and response is an empty list\", () => { pm.response.to.have.status(200); pm.expect(pm.response.json()).to.eql([]); });"] } }],
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/products" } },
+          "response": []
+        },
+        {
+          "name": "[+] POST /products - creates product",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Creates product and omits cost from response\", () => { pm.response.to.have.status(201); const product = pm.response.json(); pm.expect(product.id).to.eql(1); pm.expect(product.name).to.eql(\"syrup\"); pm.expect(product.unit).to.eql(\"bottle\"); pm.expect(product.price_per_unit).to.eql(3.07); pm.expect(product.quantity_in_stock).to.eql(6); pm.expect(product).not.to.have.property(\"cost_per_unit\"); pm.collectionVariables.set(\"product_id\", product.id); });"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"name\":\"syrup\",\"unit\":\"bottle\",\"cost_per_unit\":4.99,\"price_per_unit\":3.07,\"quantity_in_stock\":6}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{base_url}}/products" } },
+          "response": []
+        },
+        {
+          "name": "[+] POST /products - allows zero cost and quantity",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Accepts zero cost and quantity\", () => { pm.response.to.have.status(201); const product = pm.response.json(); pm.expect(product.quantity_in_stock).to.eql(0); pm.collectionVariables.set(\"second_product_id\", product.id); });"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"name\":\"zero-stock item\",\"unit\":\"each\",\"cost_per_unit\":0,\"price_per_unit\":0,\"quantity_in_stock\":0}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{base_url}}/products" } },
+          "response": []
+        },
+        {
+          "name": "[+] GET /products - returns all created products",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Returns both created products\", () => { pm.response.to.have.status(200); const products = pm.response.json(); pm.expect(products).to.have.length(2); pm.expect(products.map(product => product.name)).to.include.members([\"syrup\", \"zero-stock item\"]); });"] } }],
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/products" } },
+          "response": []
+        },
+        {
+          "name": "[+] GET /products - response omits cost_per_unit",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Product response omits cost_per_unit\", () => { pm.response.to.have.status(200); const product = pm.response.json()[0]; pm.expect(product).not.to.have.property(\"cost_per_unit\"); pm.expect(Object.keys(product).sort()).to.eql([\"id\", \"name\", \"price_per_unit\", \"quantity_in_stock\", \"unit\"]); });"] } }],
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/products" } },
+          "response": []
+        },
+        {
+          "name": "[+] GET /products/{{product_id}} - returns created product",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Returns created product without cost\", () => { pm.response.to.have.status(200); const product = pm.response.json(); pm.expect(product.id).to.eql(Number(pm.collectionVariables.get(\"product_id\"))); pm.expect(product.name).to.eql(\"syrup\"); pm.expect(product.unit).to.eql(\"bottle\"); pm.expect(product.price_per_unit).to.eql(3.07); pm.expect(product.quantity_in_stock).to.eql(6); pm.expect(product).not.to.have.property(\"cost_per_unit\"); });"] } }],
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/products/{{product_id}}" } },
+          "response": []
+        },
+        {
+          "name": "[-] GET /products/999999999 - returns 404 when missing",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Missing product returns 404\", () => { pm.response.to.have.status(404); pm.expect(pm.response.json().detail).to.eql(\"Product not found\"); });"] } }],
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/products/999999999" } },
+          "response": []
+        },
+        {
+          "name": "[-] GET /products/not-an-id - rejects non-integer id",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Non-integer id returns 422\", () => pm.response.to.have.status(422));"] } }],
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/products/not-an-id" } },
+          "response": []
+        },
+        {
+          "name": "[-] POST /products - rejects missing body",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Missing body returns 422\", () => pm.response.to.have.status(422));"] } }],
+          "request": { "method": "POST", "header": [], "body": { "mode": "raw", "raw": "", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{base_url}}/products" } },
+          "response": []
+        },
+        {
+          "name": "[-] POST /products - rejects missing required field",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Missing required field returns 422\", () => pm.response.to.have.status(422));"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"unit\":\"bottle\",\"cost_per_unit\":4.99,\"price_per_unit\":3.07,\"quantity_in_stock\":6}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{base_url}}/products" } },
+          "response": []
+        },
+        {
+          "name": "[-] POST /products - rejects negative cost_per_unit",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Negative cost returns 422\", () => pm.response.to.have.status(422));"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"name\":\"invalid cost\",\"unit\":\"each\",\"cost_per_unit\":-1,\"price_per_unit\":3.07,\"quantity_in_stock\":6}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{base_url}}/products" } },
+          "response": []
+        },
+        {
+          "name": "[-] POST /products - rejects negative quantity_in_stock",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Negative quantity returns 422\", () => pm.response.to.have.status(422));"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"name\":\"invalid quantity\",\"unit\":\"each\",\"cost_per_unit\":1,\"price_per_unit\":3.07,\"quantity_in_stock\":-1}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{base_url}}/products" } },
+          "response": []
+        },
+        {
+          "name": "[-] POST /products - rejects wrong field types",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Wrong field types return 422\", () => pm.response.to.have.status(422));"] } }],
+          "request": { "method": "POST", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"name\":\"bad types\",\"unit\":\"each\",\"cost_per_unit\":4.99,\"price_per_unit\":\"expensive\",\"quantity_in_stock\":\"many\"}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{base_url}}/products" } },
+          "response": []
+        },
+        {
+          "name": "[+] PUT /products/{{product_id}} - updates existing product",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Updates product and persists change\", () => { pm.response.to.have.status(200); const product = pm.response.json(); pm.expect(product.id).to.eql(Number(pm.collectionVariables.get(\"product_id\"))); pm.expect(product.name).to.eql(\"flour\"); pm.expect(product.unit).to.eql(\"bag\"); pm.expect(product.price_per_unit).to.eql(5); pm.expect(product.quantity_in_stock).to.eql(12); pm.expect(product).not.to.have.property(\"cost_per_unit\"); });"] } }],
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"name\":\"flour\",\"unit\":\"bag\",\"cost_per_unit\":2.5,\"price_per_unit\":5,\"quantity_in_stock\":12}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{base_url}}/products/{{product_id}}" } },
+          "response": []
+        },
+        {
+          "name": "[+] GET /products/{{product_id}} - confirms update persisted",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Updated product is persisted\", () => { pm.response.to.have.status(200); pm.expect(pm.response.json().name).to.eql(\"flour\"); });"] } }],
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/products/{{product_id}}" } },
+          "response": []
+        },
+        {
+          "name": "[-] PUT /products/999999999 - returns 404 when missing",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Missing product returns 404\", () => { pm.response.to.have.status(404); pm.expect(pm.response.json().detail).to.eql(\"No product found\"); });"] } }],
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"name\":\"flour\",\"unit\":\"bag\",\"cost_per_unit\":2.5,\"price_per_unit\":5,\"quantity_in_stock\":12}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{base_url}}/products/999999999" } },
+          "response": []
+        },
+        {
+          "name": "[-] PUT /products/{{product_id}} - rejects missing required field",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Missing required field returns 422\", () => pm.response.to.have.status(422));"] } }],
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"name\":\"flour\",\"cost_per_unit\":2.5,\"price_per_unit\":5,\"quantity_in_stock\":12}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{base_url}}/products/{{product_id}}" } },
+          "response": []
+        },
+        {
+          "name": "[-] PUT /products/{{product_id}} - rejects negative cost_per_unit",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Negative cost returns 422\", () => pm.response.to.have.status(422));"] } }],
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"name\":\"flour\",\"unit\":\"bag\",\"cost_per_unit\":-1,\"price_per_unit\":5,\"quantity_in_stock\":12}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{base_url}}/products/{{product_id}}" } },
+          "response": []
+        },
+        {
+          "name": "[-] PUT /products/{{product_id}} - rejects negative quantity_in_stock",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Negative quantity returns 422\", () => pm.response.to.have.status(422));"] } }],
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"name\":\"flour\",\"unit\":\"bag\",\"cost_per_unit\":2.5,\"price_per_unit\":5,\"quantity_in_stock\":-1}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{base_url}}/products/{{product_id}}" } },
+          "response": []
+        },
+        {
+          "name": "[-] PUT /products/not-an-id - rejects non-integer id",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Non-integer id returns 422\", () => pm.response.to.have.status(422));"] } }],
+          "request": { "method": "PUT", "header": [{ "key": "Content-Type", "value": "application/json" }], "body": { "mode": "raw", "raw": "{\"name\":\"flour\",\"unit\":\"bag\",\"cost_per_unit\":2.5,\"price_per_unit\":5,\"quantity_in_stock\":12}", "options": { "raw": { "language": "json" } } }, "url": { "raw": "{{base_url}}/products/not-an-id" } },
+          "response": []
+        },
+        {
+          "name": "[+] DELETE /products/{{product_id}} - removes existing product",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Deletes product with 204 and empty response\", () => { pm.response.to.have.status(204); pm.expect(pm.response.text()).to.eql(\"\"); });"] } }],
+          "request": { "method": "DELETE", "header": [], "url": { "raw": "{{base_url}}/products/{{product_id}}" } },
+          "response": []
+        },
+        {
+          "name": "[-] DELETE /products/999999999 - returns 404 when missing",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Missing product returns 404\", () => { pm.response.to.have.status(404); pm.expect(pm.response.json().detail).to.eql(\"No product found\"); });"] } }],
+          "request": { "method": "DELETE", "header": [], "url": { "raw": "{{base_url}}/products/999999999" } },
+          "response": []
+        },
+        {
+          "name": "[+] GET /products/{{product_id}} - confirms deleted product is gone",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Deleted product returns 404\", () => pm.response.to.have.status(404));"] } }],
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/products/{{product_id}}" } },
+          "response": []
+        },
+        {
+          "name": "DELETE /products/{{second_product_id}} - returns 404 on second delete",
+          "item": [
+            {
+              "name": "[+] DELETE /products/{{second_product_id}} - first delete succeeds",
+              "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"First delete returns 204\", () => pm.response.to.have.status(204));"] } }],
+              "request": { "method": "DELETE", "header": [], "url": { "raw": "{{base_url}}/products/{{second_product_id}}" } },
+              "response": []
+            },
+            {
+              "name": "[-] DELETE /products/{{second_product_id}} - second delete returns 404",
+              "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Second delete returns 404\", () => pm.response.to.have.status(404));"] } }],
+              "request": { "method": "DELETE", "header": [], "url": { "raw": "{{base_url}}/products/{{second_product_id}}" } },
+              "response": []
+            }
+          ]
+        },
+        {
+          "name": "[+] GET /products - returns empty list after cleanup",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"All test products were removed\", () => { pm.response.to.have.status(200); pm.expect(pm.response.json()).to.eql([]); });"] } }],
+          "request": { "method": "GET", "header": [], "url": { "raw": "{{base_url}}/products" } },
+          "response": []
+        },
+        {
+          "name": "[-] DELETE /products/not-an-id - rejects non-integer id",
+          "event": [{ "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.test(\"Non-integer id returns 422\", () => pm.response.to.have.status(422));"] } }],
+          "request": { "method": "DELETE", "header": [], "url": { "raw": "{{base_url}}/products/not-an-id" } },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000" },
+    { "key": "product_id", "value": "" },
+    { "key": "second_product_id", "value": "" }
+  ]
+}
