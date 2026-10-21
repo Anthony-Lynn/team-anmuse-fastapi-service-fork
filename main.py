@@ -1,9 +1,12 @@
 from fastapi import FastAPI
 from database import Base, engine, SessionLocal
+from app.domains.categories.category_router import router as category_router
+from app.domains.categories.models.category_model import Category as CategoryModel
 from app.domains.products.product_router import router as product_router
-from app.domains.products.models.product_model import Product as ProductModel 
+from app.domains.products.models.product_model import Product as ProductModel
 
 app = FastAPI()
+app.include_router(category_router)
 app.include_router(product_router)
 
 Base.metadata.drop_all(bind=engine)

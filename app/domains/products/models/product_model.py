@@ -1,5 +1,7 @@
+from sqlalchemy import Column, Float, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
+
 from database import Base
-from sqlalchemy import Column, Integer, String, Float
 
 
 class Product(Base):
@@ -11,3 +13,6 @@ class Product(Base):
     cost_per_unit = Column(Float)
     price_per_unit = Column(Float)
     quantity_in_stock = Column(Float)
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
+
+    category = relationship("Category", back_populates="products")
