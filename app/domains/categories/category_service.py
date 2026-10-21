@@ -18,9 +18,7 @@ class CategoryService:
     ) -> CategoryModel | None:
         return self.repository.get_category_by_id(db, category_id)
 
-    def _ensure_category_exists(self, db: Session, category_id: int | None) -> None:
-        if category_id is None:
-            return
+    def ensure_category_exists(self, db: Session, category_id: int) -> None:
         category = self.repository.get_category_by_id(db, category_id)
         if category is None:
             raise HTTPException(status_code=404, detail="Category not found")

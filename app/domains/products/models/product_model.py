@@ -13,6 +13,5 @@ class Product(Base):
     cost_per_unit = Column(Float)
     price_per_unit = Column(Float)
     quantity_in_stock = Column(Float)
-    category_id = Column(Integer, ForeignKey("categories.id"), nullable=True)
-
+    category_id = Column(Integer, ForeignKey("categories.id"), nullable=False)
     category = relationship("Category", back_populates="products")

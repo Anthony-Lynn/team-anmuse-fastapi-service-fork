@@ -7,7 +7,7 @@ class ProductBase(BaseModel):
     cost_per_unit: float = Field(ge=0)
     price_per_unit: float
     quantity_in_stock: float = Field(ge=0)
-    category_id: int | None = None
+    category_id: int
 
 
 class ProductCreate(ProductBase):
