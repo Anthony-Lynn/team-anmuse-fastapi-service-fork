@@ -7,6 +7,7 @@ class ProductBase(BaseModel):
     cost_per_unit: float = Field(ge=0)
     price_per_unit: float
     quantity_in_stock: float = Field(ge=0)
+    category_id: int | None = None
 
 
 class ProductCreate(ProductBase):
@@ -17,6 +18,13 @@ class ProductUpdate(ProductBase):
     pass
 
 
+class CategoryNested(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    name: str
+
+
 class ProductResponse(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
@@ -25,3 +33,4 @@ class ProductResponse(BaseModel):
     unit: str
     price_per_unit: float
     quantity_in_stock: float
+    category: CategoryNested | None = None
