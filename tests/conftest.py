@@ -1,26 +1,7 @@
-import os
-
 import pytest
 from fastapi.testclient import TestClient
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.pool import StaticPool
 
-os.environ["DATABASE_URL"] = "sqlite://"
-
-import database
-from database import Base, get_db
-
-test_engine = create_engine(
-    "sqlite://",
-    connect_args={"check_same_thread": False},
-    poolclass=StaticPool,
-)
-TestingSessionLocal = sessionmaker(bind=test_engine, autocommit=False, autoflush=False)
-
-database.engine = test_engine
-database.SessionLocal = TestingSessionLocal
-
+from database import Base, engine
 from main import app
 
 SAMPLE_PRODUCT = {
@@ -32,23 +13,14 @@ SAMPLE_PRODUCT = {
 }
 
 
-def override_get_db():
-    db = TestingSessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
-
 @pytest.fixture
 def client():
-    Base.metadata.drop_all(bind=test_engine)
-    Base.metadata.create_all(bind=test_engine)
-    app.dependency_overrides[get_db] = override_get_db
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
     with TestClient(app) as test_client:
         yield test_client
-    app.dependency_overrides.clear()
-    Base.metadata.drop_all(bind=test_engine)
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)  # leave empty tables behind so the app still works
 
 
 def product_payload(**overrides):
