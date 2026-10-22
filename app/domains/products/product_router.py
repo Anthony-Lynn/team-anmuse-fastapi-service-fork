@@ -3,10 +3,12 @@ from sqlalchemy.orm import Session
 
 from app.domains.products.product_service import ProductService
 from app.domains.products.schemas.product import ProductCreate, ProductResponse, ProductUpdate
+from app.domains.categories.category_service import CategoryService
 from database import get_db
 
 router = APIRouter()
 product_service = ProductService()
+category_service = CategoryService()
 
 
 @router.post(
@@ -16,7 +18,9 @@ product_service = ProductService()
     response_model_exclude_none=True,
 )
 def create_product(product: ProductCreate, db: Session = Depends(get_db)):
-    return product_service.create_product(db, product)
+     if not category_service.category_exists(db, product.category_id):
+        raise HTTPException(status_code=404, detail="Category not found")
+     return product_service.create_product(db, product)
 
 
 @router.get(
@@ -57,6 +61,8 @@ def get_product(product_id: int, db: Session = Depends(get_db)):
 def update_product(
     product_id: int, product: ProductUpdate, db: Session = Depends(get_db)
 ):
+    if not category_service.category_exists(db, product.category_id):
+        raise HTTPException(status_code=404, detail="Category not found")
     updated = product_service.update_product(db, product_id, product)
     if updated is None:
         raise HTTPException(status_code=404, detail="No product found")

@@ -17,7 +17,7 @@ class ProductService:
         self.category_service = category_service or CategoryService()
 
     def create_product(self, db: Session, product: ProductCreate) -> ProductModel:
-        self.category_service._ensure_category_exists(db, product.category_id)
+        # self.category_service._ensure_category_exists(db, product.category_id)
         return self.repository.create_product(db, product)
 
     def get_products(self, db: Session) -> list[ProductModel]:

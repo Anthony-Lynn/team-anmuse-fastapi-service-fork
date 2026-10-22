@@ -14,7 +14,7 @@ Install Postman
 
 ## Environment Setup
 * Step 1: Setup an enviornment by running "python -m venv .venv" in your terminal.
-* Step 2: Start the enviornment by running ".venv\Scripts\Activate.ps1" in your terminal.
+* Step 2: Start the enviornment by running "source .venv\Scripts\Activate.ps1" in your terminal.
 * Step 3: create .env file with an enviornment variable set to: DATABASE_URL=postgresql+psycopg2://{username}:{password}@{host}:{port}/products_db. This will allow the server to connect psql database.
 
 
