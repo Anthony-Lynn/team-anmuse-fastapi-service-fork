@@ -29,6 +29,9 @@ class ProductService:
     def update_product(
         self, db: Session, product_id: int, product: ProductUpdate
     ) -> ProductModel | None:
+        if self.repository.get_product_by_id(db, product_id) is None:
+            return None
+        self.category_service.ensure_category_exists(db, product.category_id)
         return self.repository.update_product(db, product_id, product)
 
     def delete_product(self, db: Session, product_id: int) -> bool:

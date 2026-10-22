@@ -45,6 +45,7 @@ class ProductRepository:
         db_product.cost_per_unit = product.cost_per_unit
         db_product.price_per_unit = product.price_per_unit
         db_product.quantity_in_stock = product.quantity_in_stock
+        db_product.category_id = product.category_id
         db.commit()
         db.refresh(db_product)
         return self.get_product_by_id(db, product_id)

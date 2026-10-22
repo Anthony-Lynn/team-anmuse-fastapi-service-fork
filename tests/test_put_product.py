@@ -4,6 +4,7 @@ from tests.conftest import create_product, product_payload
 def test_put_product_updates_existing_product(client):
     created = create_product(client, name="syrup").json()
     update = product_payload(
+        category_id=created["category"]["id"],
         name="flour",
         unit="bag",
         cost_per_unit=2.5,
@@ -20,12 +21,17 @@ def test_put_product_updates_existing_product(client):
     assert product["unit"] == "bag"
     assert product["price_per_unit"] == 5.0
     assert product["quantity_in_stock"] == 12
+    assert product["category"]["id"] == created["category"]["id"]
     assert "cost_per_unit" not in product
     assert client.get(f"/products/{created['id']}").json()["name"] == "flour"
 
 
 def test_put_product_returns_404_when_missing(client):
-    response = client.put("/products/999", json=product_payload())
+    category = client.post("/categories", json={"name": "test category"}).json()
+    response = client.put(
+        "/products/999",
+        json=product_payload(category_id=category["id"]),
+    )
 
     assert response.status_code == 404
     assert response.json()["detail"] == "No product found"
@@ -33,8 +39,18 @@ def test_put_product_returns_404_when_missing(client):
 
 def test_put_product_returns_422_when_required_field_is_missing(client):
     created = create_product(client).json()
-    payload = product_payload()
+    payload = product_payload(category_id=created["category"]["id"])
     payload.pop("unit")
+
+    response = client.put(f"/products/{created['id']}", json=payload)
+
+    assert response.status_code == 422
+
+
+def test_put_product_returns_422_when_category_id_is_missing(client):
+    created = create_product(client).json()
+    payload = product_payload(category_id=created["category"]["id"])
+    payload.pop("category_id")
 
     response = client.put(f"/products/{created['id']}", json=payload)
 
@@ -46,7 +62,9 @@ def test_put_product_returns_422_for_invalid_cost_per_unit(client):
 
     response = client.put(
         f"/products/{created['id']}",
-        json=product_payload(cost_per_unit=-1.0),
+        json=product_payload(
+            category_id=created["category"]["id"], cost_per_unit=-1.0
+        ),
     )
 
     assert response.status_code == 422
@@ -57,14 +75,20 @@ def test_put_product_returns_422_for_invalid_quantity_in_stock(client):
 
     response = client.put(
         f"/products/{created['id']}",
-        json=product_payload(quantity_in_stock=-1.0),
+        json=product_payload(
+            category_id=created["category"]["id"], quantity_in_stock=-1.0
+        ),
     )
 
     assert response.status_code == 422
 
 
 def test_put_product_returns_422_for_non_integer_id(client):
-    response = client.put("/products/not-an-id", json=product_payload())
+    category = client.post("/categories", json={"name": "test category"}).json()
+    response = client.put(
+        "/products/not-an-id",
+        json=product_payload(category_id=category["id"]),
+    )
 
     assert response.status_code == 422
 from tests.conftest import create_product, product_payload

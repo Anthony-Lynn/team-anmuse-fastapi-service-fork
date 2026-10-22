@@ -31,10 +31,12 @@ def test_get_products_response_omits_cost_per_unit(client):
     assert response.status_code == 200
     product = response.json()[0]
     assert "cost_per_unit" not in product
+    assert product["category"]["name"] == "test category"
     assert set(product.keys()) == {
         "id",
         "name",
         "unit",
         "price_per_unit",
         "quantity_in_stock",
+        "category",
     }

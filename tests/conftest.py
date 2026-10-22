@@ -19,13 +19,24 @@ def client():
     Base.metadata.create_all(bind=engine)
     with TestClient(app) as test_client:
         yield test_client
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)  # leave empty tables behind so the app still works
 
 
-def product_payload(**overrides):
-    return {**SAMPLE_PRODUCT, **overrides}
+def product_payload(category_id: int, **overrides):
+    return {**SAMPLE_PRODUCT, "category_id": category_id, **overrides}
 
 
-def create_product(client: TestClient, **overrides):
-    return client.post("/products", json=product_payload(**overrides))
+def create_category(client: TestClient, name: str = "test category"):
+    return client.post("/categories", json={"name": name})
+
+
+def create_product(
+    client: TestClient, category_id: int | None = None, **overrides
+):
+    if category_id is None:
+        category_response = create_category(client)
+        assert category_response.status_code == 201
+        category_id = category_response.json()["id"]
+    return client.post(
+        "/products",
+        json=product_payload(category_id=category_id, **overrides),
+    )

@@ -13,6 +13,7 @@ def test_get_product_by_id_returns_created_product(client):
     assert product["unit"] == "bottle"
     assert product["price_per_unit"] == 3.07
     assert product["quantity_in_stock"] == 6
+    assert product["category"]["name"] == "test category"
     assert "cost_per_unit" not in product
 
 
