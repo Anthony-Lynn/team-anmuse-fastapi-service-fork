@@ -32,9 +32,7 @@ async def hello(request: Request, name: str = Form(...)):
         print(
             "Request for hello page received with no name or blank name -- redirecting"
         )
-        return RedirectResponse(
-            request.url_for("index"), status_code=status.HTTP_302_FOUND
-        )
+        return RedirectResponse(request.url_for("index"), status_code=302)
 
 
 @app.get("/")
