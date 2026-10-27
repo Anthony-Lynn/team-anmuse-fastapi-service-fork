@@ -1,4 +1,3 @@
-For readme:
 # team-anmuse-fastapi-service
 
 ## About
