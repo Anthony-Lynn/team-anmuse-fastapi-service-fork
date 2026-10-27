@@ -8,7 +8,6 @@ app = FastAPI()
 app.include_router(category_router)
 app.include_router(product_router)
 
-Base.metadata.drop_all(bind=engine)
 Base.metadata.create_all(bind=engine)
 
 
