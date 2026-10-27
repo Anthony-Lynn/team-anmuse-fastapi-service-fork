@@ -1,6 +1,5 @@
 import os
 
-from typing import cast
 from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
